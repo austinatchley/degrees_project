@@ -1,5 +1,6 @@
 import csv
 import sys
+import queue
 
 from util import Node, StackFrontier, QueueFrontier
 
@@ -57,10 +58,8 @@ def main():
         sys.exit("Usage: python degrees.py [directory]")
     directory = sys.argv[1] if len(sys.argv) == 2 else "large"
 
-    print(directory)
-
     # Load data from files into memory
-    print("Loading data...")
+    print(f"Loading data from {directory}...")
     load_data(directory)
     print("Data loaded.")
 
@@ -86,6 +85,7 @@ def main():
             print(f"{i + 1}: {person1} and {person2} starred in {movie}")
 
 
+################################
 def shortest_path(source, target):
     """
     Returns the shortest list of (movie_id, person_id) pairs
@@ -94,9 +94,31 @@ def shortest_path(source, target):
     If no possible path, returns None.
     """
 
-    # TODO
-    raise NotImplementedError
+    return bfs(source, target, set())
 
+def bfs(source, target, seen):
+    if source == target:
+        print("Hit base case")
+        return list(source)
+
+    q = queue.Queue()
+    q.put(source)
+    while not q.empty():
+        cur = q.get()
+
+        print(f"Explored node with personId: {cur}")
+        seen.add(cur)
+
+        neighbors = neighbors_for_person(cur)
+        # print("Neighbors: ", neighbors)
+        for neighbor in neighbors:
+            neighbor_id = neighbor[1]
+            # print(f"Neighbor {neighbor_id} found.")
+            if neighbor_id not in seen:
+                q.put(neighbor_id)
+                
+
+################################
 
 def person_id_for_name(name):
     """
