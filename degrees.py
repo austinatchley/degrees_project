@@ -72,6 +72,7 @@ def main():
 
     path = shortest_path(source, target)
 
+    print_new_step("Solution:")
     if path is None:
         print("Not connected.")
     else:
@@ -117,11 +118,11 @@ def find_end_nodes_bfs(source, target, seen):
         cur = q.get()
         person_id = cur.person_id
 
-        print(f"Explored node with personId: {person_id}")
-        print(people[person_id])
+        print_debug(f"Explored node with personId: {person_id}")
+        print_debug(people[person_id])
 
         if person_id == target:
-            print("Found target")
+            print_debug("Found target")
             valid_end_nodes.append(cur)
             continue
 
@@ -140,15 +141,15 @@ def backtrack(cur, source, target):
     path = list()
 
     while cur != None and cur.person_id != source:
-        print(f"Visiting node={cur.person_id} while backtracking")
+        print_debug(f"Visiting node={cur.person_id} while backtracking")
         path.append([cur.movie_id, cur.person_id])
         cur = cur.parent
 
     if cur.person_id != source:
-        print("Backtrack doesn't connect to source. Returning empty list")
+        print_debug("Backtrack doesn't connect to source. Returning empty list")
         return list()
 
-    print("Backtracking produced: ", path)
+    print_debug(f"Backtracking produced: {path}")
     return path
 
 def min_path(valid_paths):
@@ -159,13 +160,13 @@ def min_path(valid_paths):
     minimum_cost = len(valid_paths[0])
     minimum_cost_path = None
     for path in valid_paths:
-        print(f"Evaluating path with length={len(path)}\tpath={path}")
+        print_debug(f"Evaluating path with length={len(path)}\tpath={path}")
         if len(path) <= minimum_cost:
-            print("New min cost path found.")
+            print_debug("New min cost path found.")
             minimum_cost = len(path)
             minimum_cost_path = path
 
-    print(f"Min cost path={minimum_cost_path}")
+    print_debug(f"Min cost path={minimum_cost_path}")
     return minimum_cost_path
 
 def expand_valid_end_nodes(valid_end_nodes, source, target):
@@ -180,11 +181,15 @@ def expand_valid_end_nodes(valid_end_nodes, source, target):
     return valid_paths
 
 def print_new_step(msg):
-    print()
-    print("=======================")
-    print(msg)
-    print("=======================")
-    print()
+    print_debug("")
+    print_debug("=======================")
+    print_debug(msg)
+    print_debug("=======================")
+    print_debug("")
+
+def print_debug(msg):
+    #print(msg)
+    pass
 
 ################################
 
