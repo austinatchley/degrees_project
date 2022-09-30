@@ -100,11 +100,17 @@ def shortest_path(source, target):
     If no possible path, returns None.
     """
 
-    print(f"Searching for source={source} and target={target}")
+    print_new_step(f"Starting search for shortest path between source={source} and target={target}")
 
-    return bfs(source, target, set())
+    valid_end_nodes = find_end_nodes_bfs(source, target, set())
+    valid_paths = expand_valid_end_nodes(valid_end_nodes, source, target)
 
-def bfs(source, target, seen):
+    return min_path(valid_paths)
+
+def find_end_nodes_bfs(source, target, seen):
+    print_new_step("Finding all valid paths using BFS.")
+
+    valid_end_nodes = list()
     q = queue.Queue()
     q.put(Node(source, None, None))
     while not q.empty():
@@ -116,7 +122,8 @@ def bfs(source, target, seen):
 
         if person_id == target:
             print("Found target")
-            return backtrack(cur, source, target)
+            valid_end_nodes.append(cur)
+            continue
 
         seen.add(person_id)
 
@@ -127,7 +134,7 @@ def bfs(source, target, seen):
             if neighbor_id not in seen:
                 q.put(Node(neighbor_id, movie_id, cur))
 
-    return None
+    return valid_end_nodes
 
 def backtrack(cur, source, target):
     path = list()
@@ -144,6 +151,40 @@ def backtrack(cur, source, target):
     print("Backtracking produced: ", path)
     return path
 
+def min_path(valid_paths):
+    print_new_step("Finding the minimum cost path out of all valid paths found.")
+    if valid_paths == None:
+        return None
+
+    minimum_cost = len(valid_paths[0])
+    minimum_cost_path = None
+    for path in valid_paths:
+        print(f"Evaluating path with length={len(path)}\tpath={path}")
+        if len(path) <= minimum_cost:
+            print("New min cost path found.")
+            minimum_cost = len(path)
+            minimum_cost_path = path
+
+    print(f"Min cost path={minimum_cost_path}")
+    return minimum_cost_path
+
+def expand_valid_end_nodes(valid_end_nodes, source, target):
+    print_new_step("Expanding end nodes into full paths.")
+    valid_paths = list()
+
+    for end_node in valid_end_nodes:
+        path = backtrack(end_node, source, target)
+        if path != None:
+            valid_paths.append(path)
+
+    return valid_paths
+
+def print_new_step(msg):
+    print()
+    print("=======================")
+    print(msg)
+    print("=======================")
+    print()
 
 ################################
 
