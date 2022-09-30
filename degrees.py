@@ -86,6 +86,12 @@ def main():
 
 
 ################################
+class Node:
+    def __init__(self, person_id, movie_id, parent):
+        self.person_id = person_id
+        self.movie_id = movie_id
+        self.parent = parent
+
 def shortest_path(source, target):
     """
     Returns the shortest list of (movie_id, person_id) pairs
@@ -100,25 +106,44 @@ def shortest_path(source, target):
 
 def bfs(source, target, seen):
     q = queue.Queue()
-    q.put(source)
+    q.put(Node(source, None, None))
     while not q.empty():
         cur = q.get()
+        person_id = cur.person_id
 
-        if cur == target:
+        print(f"Explored node with personId: {person_id}")
+        print(people[person_id])
+
+        if person_id == target:
             print("Found target")
-            return [source, target]
+            return backtrack(cur, source, target)
 
-        print(f"Explored node with personId: {cur}")
-        print(people[cur])
-        seen.add(cur)
+        seen.add(person_id)
 
-        neighbors = neighbors_for_person(cur)
-        # print("Neighbors: ", neighbors)
+        neighbors = neighbors_for_person(person_id)
         for neighbor in neighbors:
+            movie_id = neighbor[0]
             neighbor_id = neighbor[1]
             if neighbor_id not in seen:
-                q.put(neighbor_id)
-                
+                q.put(Node(neighbor_id, movie_id, cur))
+
+    return None
+
+def backtrack(cur, source, target):
+    path = list()
+
+    while cur != None and cur.person_id != source:
+        print(f"Visiting node={cur.person_id} while backtracking")
+        path.append([cur.movie_id, cur.person_id])
+        cur = cur.parent
+
+    if cur.person_id != source:
+        print("Backtrack doesn't connect to source. Returning empty list")
+        return list()
+
+    print("Backtracking produced: ", path)
+    return path
+
 
 ################################
 
