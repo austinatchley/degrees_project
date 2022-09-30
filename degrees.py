@@ -94,26 +94,28 @@ def shortest_path(source, target):
     If no possible path, returns None.
     """
 
+    print(f"Searching for source={source} and target={target}")
+
     return bfs(source, target, set())
 
 def bfs(source, target, seen):
-    if source == target:
-        print("Hit base case")
-        return list(source)
-
     q = queue.Queue()
     q.put(source)
     while not q.empty():
         cur = q.get()
 
+        if cur == target:
+            print("Found target")
+            return [source, target]
+
         print(f"Explored node with personId: {cur}")
+        print(people[cur])
         seen.add(cur)
 
         neighbors = neighbors_for_person(cur)
         # print("Neighbors: ", neighbors)
         for neighbor in neighbors:
             neighbor_id = neighbor[1]
-            # print(f"Neighbor {neighbor_id} found.")
             if neighbor_id not in seen:
                 q.put(neighbor_id)
                 
