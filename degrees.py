@@ -102,7 +102,6 @@ def shortest_path(source, target):
     """
 
     print_new_step(f"Starting search for shortest path between source={source} and target={target}")
-
     return bfs(source, target, set())
 
 def bfs(source, target, seen):
@@ -135,6 +134,7 @@ def bfs(source, target, seen):
     return None
 
 def backtrack(cur, source, target):
+    print_new_step("Backtracking from target to source.")
     path = list()
 
     if cur.person_id != target:
@@ -154,34 +154,6 @@ def backtrack(cur, source, target):
     print_debug(f"Backtracking produced: {path}")
     return path
 
-def min_path(valid_paths):
-    print_new_step("Finding the minimum cost path out of all valid paths found.")
-    if valid_paths == None:
-        return None
-
-    minimum_cost = len(valid_paths[0])
-    minimum_cost_path = None
-    for path in valid_paths:
-        print_debug(f"Evaluating path with length={len(path)}\tpath={path}")
-        if len(path) <= minimum_cost:
-            print_debug("New min cost path found.")
-            minimum_cost = len(path)
-            minimum_cost_path = path
-
-    print_debug(f"Min cost path={minimum_cost_path}")
-    return minimum_cost_path
-
-def expand_valid_end_nodes(valid_end_nodes, source, target):
-    print_new_step("Expanding end nodes into full paths.")
-    valid_paths = list()
-
-    for end_node in valid_end_nodes:
-        path = backtrack(end_node, source, target)
-        if path != None:
-            valid_paths.append(path)
-
-    return valid_paths
-
 def print_new_step(msg):
     print_debug("")
     print_debug("=======================")
@@ -190,8 +162,8 @@ def print_new_step(msg):
     print_debug("")
 
 def print_debug(msg):
-    print(msg)
-    #pass
+    # print(msg)
+    pass
 
 ################################
 
