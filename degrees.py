@@ -103,12 +103,9 @@ def shortest_path(source, target):
 
     print_new_step(f"Starting search for shortest path between source={source} and target={target}")
 
-    valid_end_nodes = find_end_nodes_bfs(source, target, set())
-    valid_paths = expand_valid_end_nodes(valid_end_nodes, source, target)
+    return bfs(source, target, set())
 
-    return min_path(valid_paths)
-
-def find_end_nodes_bfs(source, target, seen):
+def bfs(source, target, seen):
     print_new_step("Finding all valid paths using BFS.")
 
     valid_end_nodes = list()
@@ -118,13 +115,12 @@ def find_end_nodes_bfs(source, target, seen):
         cur = q.get()
         person_id = cur.person_id
 
-        print_debug(f"Explored node with personId: {person_id}")
+        print_debug(f"Explored node with person_Id: {person_id}")
         print_debug(people[person_id])
 
         if person_id == target:
             print_debug("Found target")
-            valid_end_nodes.append(cur)
-            continue
+            return backtrack(cur, source, target)
 
         seen.add(person_id)
 
@@ -133,12 +129,17 @@ def find_end_nodes_bfs(source, target, seen):
             movie_id = neighbor[0]
             neighbor_id = neighbor[1]
             if neighbor_id not in seen:
+                print_debug(f"{person_id} and {neighbor_id} were in {movie_id} together")
                 q.put(Node(neighbor_id, movie_id, cur))
 
-    return valid_end_nodes
+    return None
 
 def backtrack(cur, source, target):
     path = list()
+
+    if cur.person_id != target:
+        print_debug(f"Backtracing from non-target node = {cur.person_id}. Returning empty list")
+        return list()
 
     while cur != None and cur.person_id != source:
         print_debug(f"Visiting node={cur.person_id} while backtracking")
@@ -149,6 +150,7 @@ def backtrack(cur, source, target):
         print_debug("Backtrack doesn't connect to source. Returning empty list")
         return list()
 
+    path.reverse()
     print_debug(f"Backtracking produced: {path}")
     return path
 
@@ -188,8 +190,8 @@ def print_new_step(msg):
     print_debug("")
 
 def print_debug(msg):
-    #print(msg)
-    pass
+    print(msg)
+    #pass
 
 ################################
 
